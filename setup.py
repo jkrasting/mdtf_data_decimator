@@ -1,3 +1,4 @@
+#!/usr/bin/python
 """ setup for mdtf_test_data """
 from setuptools import setup, find_packages
 import os
@@ -16,9 +17,9 @@ setup(
     url="https://github.com/jkrasting/mdtf_test_data",
     packages=find_packages(),
     scripts=[
+        "src/core.py"
         "scripts/mdtf-coarsen.py",
-        "scripts/ncar_synthetic.py",
-        "scripts/gfdl_synthetic.py",
         "scripts/mdtf_src_query.py",
     ],
+    entry_points={'synthetic': ['synthetic=mdtf_test_data.src.core:main']}
 )
