@@ -1,47 +1,48 @@
 #!/usr/bin/env python
 
 """ Script to generate synthetic GFDL CM4 output """
-
+import util.cli
 import os
+import mdtf_test_data.synthetic as td
 
-import mdtf_test_data as td
 
-DLON = 20
-DLAT = 20
-STARTYEAR = 1
-NYEARS = 10
+def gfdl_syn_main(**args):
+    #DLON = 20
+    #DLAT = 20
+    #STARTYEAR = 1
+    #NYEARS = 10
 
-CASENAME = "GFDL.Synthetic"
+    CASENAME = "GFDL.Synthetic"
 
-# os.makedirs(f"{CASENAME}/mon")
-os.makedirs(f"{CASENAME}/day")
-# os.makedirs(f"{CASENAME}/3hr")
-# os.makedirs(f"{CASENAME}/1hr")
+    # os.makedirs(f"{CASENAME}/mon")
+    os.makedirs(f"{CASENAME}/day")
+    # os.makedirs(f"{CASENAME}/3hr")
+    # os.makedirs(f"{CASENAME}/1hr")
 
-# -- Create Daily Data
-print("Generating daily data ...")
+    # -- Create Daily Data
+    print("Generating daily data ...")
 
-outfile = "precip"
-stats = (2.9479988e-05, 6.57948e-05)
-attrs = {
-    "long_name": "Total precipitation rate",
-    "units": "kg/m2/s",
-    "cell_methods": "time: mean",
-    "time_avg_info": "average_T1,average_T2,average_DT",
-    "interp_method": "conserve_order1",
-}
-dset_out = td.synthetic.generate_synthetic_dataset(
-    stats,
-    DLON,
-    DLAT,
-    STARTYEAR,
-    NYEARS,
-    outfile,
-    timeres="day",
-    attrs=attrs,
-    fmt="gfdl",
-)
-td.synthetic.write_to_netcdf(dset_out, f"{CASENAME}/day/{CASENAME}.{outfile}.day.nc")
+    outfile = "precip"
+    stats = (2.9479988e-05, 6.57948e-05)
+    attrs = {
+        "long_name": "Total precipitation rate",
+        "units": "kg/m2/s",
+        "cell_methods": "time: mean",
+        "time_avg_info": "average_T1,average_T2,average_DT",
+        "interp_method": "conserve_order1",
+    }
+    dset_out = td.synthetic.generate_synthetic_dataset(
+        stats,
+        DLON,
+        DLAT,
+        STARTYEAR,
+        NYEARS,
+        outfile,
+        timeres="day",
+        attrs=attrs,
+        fmt="gfdl",
+    )
+    td.synthetic.write_to_netcdf(dset_out, f"{CASENAME}/day/{CASENAME}.{outfile}.day.nc")
 
 outfile = "sphum"
 attrs = {
