@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """ Module for generating synthetic datasets """
 
 ___all__ = [

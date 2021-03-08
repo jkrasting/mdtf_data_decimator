@@ -1,48 +1,16 @@
 #!/usr/bin/env python
 
+__all__ = ["gfdl_syn_main"]
 """ Script to generate synthetic GFDL CM4 output """
-import util.cli
+import mdtf_test_data.util.cli
 import os
 import mdtf_test_data.synthetic as td
 
-
-def gfdl_syn_main(**args):
-    #DLON = 20
-    #DLAT = 20
-    #STARTYEAR = 1
-    #NYEARS = 10
-
-    CASENAME = "GFDL.Synthetic"
-
-    # os.makedirs(f"{CASENAME}/mon")
-    os.makedirs(f"{CASENAME}/day")
-    # os.makedirs(f"{CASENAME}/3hr")
-    # os.makedirs(f"{CASENAME}/1hr")
-
-    # -- Create Daily Data
-    print("Generating daily data ...")
-
-    outfile = "precip"
-    stats = (2.9479988e-05, 6.57948e-05)
-    attrs = {
-        "long_name": "Total precipitation rate",
-        "units": "kg/m2/s",
-        "cell_methods": "time: mean",
-        "time_avg_info": "average_T1,average_T2,average_DT",
-        "interp_method": "conserve_order1",
-    }
-    dset_out = td.synthetic.generate_synthetic_dataset(
-        stats,
-        DLON,
-        DLAT,
-        STARTYEAR,
-        NYEARS,
-        outfile,
-        timeres="day",
-        attrs=attrs,
-        fmt="gfdl",
-    )
-    td.synthetic.write_to_netcdf(dset_out, f"{CASENAME}/day/{CASENAME}.{outfile}.day.nc")
+DLAT = 20
+DLON = 20
+STARTYEAR = 1
+NYEARS = 10
+CASENAME = "gfdl.synthetic"
 
 outfile = "sphum"
 attrs = {
@@ -288,6 +256,8 @@ stats = [
     (9.023049354553223, 25.71630859375),
     (12.582330703735352, 32.460975646972656),
 ]
+
+td.synthetic.write_to_netcdf(dset_out, f"{CASENAME}/day/{CASENAME}.{outfile}.day.nc")
 dset_out = td.synthetic.generate_synthetic_dataset(
     stats,
     DLON,
@@ -299,4 +269,37 @@ dset_out = td.synthetic.generate_synthetic_dataset(
     attrs=attrs,
     fmt="gfdl",
 )
-td.synthetic.write_to_netcdf(dset_out, f"{CASENAME}/day/{CASENAME}.{outfile}.day.nc")
+
+def gfdl_syn_main(DLAT=1.0, DLON=1.0, STARTYEAR=1,NYEARS=10,CASENAME=""):
+    """Main script to generate synthetic data using GFDL naming conventions"""
+    print("DLAT is ", DLAT)
+
+    # os.makedirs(f"{CASENAME}/mon")
+    os.makedirs(f"{CASENAME}/day")
+    # os.makedirs(f"{CASENAME}/3hr")
+    # os.makedirs(f"{CASENAME}/1hr")
+
+    # -- Create Daily Data
+    print("Generating daily data ...")
+
+    outfile = "precip"
+    stats = (2.9479988e-05, 6.57948e-05)
+    attrs = {
+        "long_name": "Total precipitation rate",
+        "units": "kg/m2/s",
+        "cell_methods": "time: mean",
+        "time_avg_info": "average_T1,average_T2,average_DT",
+        "interp_method": "conserve_order1",
+    }
+    dset_out = td.synthetic.generate_synthetic_dataset(
+        stats,
+        DLON,
+        DLAT,
+        STARTYEAR,
+        NYEARS,
+        outfile,
+        timeres="day",
+        attrs=attrs,
+        fmt="gfdl",
+    )
+    td.synthetic.write_to_netcdf(dset_out, f"{CASENAME}/day/{CASENAME}.{outfile}.day.nc")

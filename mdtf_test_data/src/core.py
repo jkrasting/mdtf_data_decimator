@@ -1,19 +1,11 @@
 #!/usr/bin/python
 """ mdtf_test_data driver program """
 import argparse
-import os
+import mdtf_test_data.util.cli
+import mdtf_test_data.scripts
 import sys
-import scripts.gfdl_synthetic
-import scripts.ncar_synthetic
 
-class cli_holder(object):
-    "Object with command line info from argparse"
-    def __init__(self, convention, startyear, nyears, dlat, dlon):
-        self.convention = convention
-        self.startyear = startyear
-        self.nyears = nyears
-        self.dlat = dlat
-        self.dlon = dlon
+
 def main():
     """The the central nervous system of the mdtf_test_data package"""
     print("Starting mdtf_test_data")
@@ -31,15 +23,17 @@ def main():
     parser.add_argument("--dlon", type=float, help="Longitude resolution in degrees",
                     required=False, default=20.0)
     args = parser.parse_args()
-    cli_info = cli_holder(args.convention, args.startyear,
+    cli_info = mdtf_test_data.util.cli.cli_holder(args.convention, args.startyear,
                           args.nyears, args.dlat, args.dlon)
     #cli_vars = vars(cli_info)
     assert cli_info.dlat <= 30.0 and cli_info.dlat >= 0.5, "Error: dlat value is invalid; valid range is [0.5 30.0]"
     assert cli_info.dlon <= 60.0 and cli_info.dlon >= 0.5, "Error: dlon value is invalid; valid range is [0.5 60.0]"
-    if cli_info == 'GFDL':
-        call scripts.gfdl_synthetic(cli_info)
-    else if cli_info == 'CESM':
-        call scripts.ncar_synthetic(cli_info)
+    if cli_info.convention == 'GFDL':
+       print("Calling GFDL SYNTHETIC")
+       mdtf_test_data.scripts.gfdl_synthetic.gfdl_syn_main(DLAT=cli_info.dlat, DLON=cli_info.dlon,
+                        STARTYEAR=cli_info.startyear, NYEARS=cli_info.nyears, CASENAME=cli_info.convention)
+    #else if cli_info.convention == 'CESM':
+    #    call scripts.ncar_synthetic(cli_info)
 
 # [print(key,':',value) for key, value in cli_vars.items()]
 if __name__ == '__main__':

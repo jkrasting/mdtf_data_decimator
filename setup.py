@@ -15,11 +15,5 @@ setup(
     license="LGPLv3",
     keywords="",
     url="https://github.com/jkrasting/mdtf_test_data",
-    packages=find_packages(),
-    scripts=[
-        "src/core.py"
-        "scripts/mdtf-coarsen.py",
-        "scripts/mdtf_src_query.py",
-    ],
-    entry_points={'synthetic': ['synthetic=mdtf_test_data.src.core:main']}
+    packages=find_packages()
 )
