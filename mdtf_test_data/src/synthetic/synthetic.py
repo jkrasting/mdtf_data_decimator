@@ -19,7 +19,7 @@ import cftime
 import xarray as xr
 import numpy as np
 
-from mdtf_test_data.coarsen import construct_rect_grid
+from coarsen import construct_rect_grid
 
 
 def dataset_stats(filename, var=None, limit=None):
