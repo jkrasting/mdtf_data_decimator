@@ -2,8 +2,10 @@
 """ mdtf_test_data driver program """
 import argparse
 import util.cli
+import util.read_yaml
 from scripts import gfdl_synthetic, ncar_synthetic
 import sys
+import os
 
 
 def main():
@@ -29,9 +31,21 @@ def main():
     assert cli_info.dlat <= 30.0 and cli_info.dlat >= 0.5, "Error: dlat value is invalid; valid range is [0.5 30.0]"
     assert cli_info.dlon <= 60.0 and cli_info.dlon >= 0.5, "Error: dlon value is invalid; valid range is [0.5 60.0]"
     if cli_info.convention == 'GFDL':
-       print("Calling GFDL SYNTHETIC")
-       gfdl_synthetic.gfdl_syn_main(DLAT=cli_info.dlat, DLON=cli_info.dlon,
-                        STARTYEAR=cli_info.startyear, NYEARS=cli_info.nyears, CASENAME="gfdl.synthetic")
+       print("importing GFDL variable information")
+       # default behavior is to run script from mdtf_test_data directory
+       cur_dir = os.getcwd()
+       print("current directory is", cur_dir)
+       assert(os.path.basename(cur_dir) == "mdtf_test_data")
+
+       input_data = util.read_yaml.read_yaml("config/gfdl_day.yaml")
+       vars = [val for key, val in input_data.items() if key=="name"]
+       var_meta = [val for key, val in input_data.items() if key=="atts"]
+       print(vars)
+       print(var_meta[0]["stats"])
+
+       #print("Calling GFDL SYNTHETIC")
+       #gfdl_synthetic.gfdl_syn_main(DLAT=cli_info.dlat, DLON=cli_info.dlon,
+       #                 STARTYEAR=cli_info.startyear, NYEARS=cli_info.nyears, CASENAME="gfdl.synthetic")
     elif cli_info.convention == 'CESM':
        print("Calling NCAR SYNTHETIC")
        ncar_synthetic.ncar_syn_main(DLAT=cli_info.dlat, DLON=cli_info.dlon,

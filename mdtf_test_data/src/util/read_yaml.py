@@ -4,9 +4,8 @@
 import yaml
 import pprint
 
-def read_yaml():
+def read_yaml(file_name):
     """ A function to read YAML file"""
-    with open('config.yml') as f:
+    with open(file_name) as f:
         config = yaml.safe_load(f)
-
     return config
