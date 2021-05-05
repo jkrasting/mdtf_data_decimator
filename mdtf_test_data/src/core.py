@@ -2,12 +2,15 @@
 """ mdtf_test_data driver program """
 import argparse
 import util.cli
-import util.read_yaml
-from scripts import gfdl_synthetic
-from scripts import ncar_synthetic
+from scripts import synthetic
 import sys
 import os
+from envyaml import EnvYAML
 
+def read_yaml(file_name):
+    """ A function to read YAML files """
+    config = EnvYAML(file_name)
+    return config
 
 def main():
     """The the central nervous system of the mdtf_test_data package"""
@@ -35,19 +38,23 @@ def main():
     assert cli_info.dlat <= 30.0 and cli_info.dlat >= 0.5, "Error: dlat value is invalid; valid range is [0.5 30.0]"
     assert cli_info.dlon <= 60.0 and cli_info.dlon >= 0.5, "Error: dlon value is invalid; valid range is [0.5 60.0]"
     if cli_info.convention == 'GFDL':
-        print("importing GFDL variable information")
-        input_data = util.read_yaml.read_yaml("config/gfdl_day.yaml")
+        print("Importing GFDL variable information")
+        input_data = read_yaml("config/gfdl_day.yml")
 
-        print("Calling GFDL SYNTHETIC")
-        gfdl_synthetic.gfdl_syn_main(input_data, DLAT=cli_info.dlat, DLON=cli_info.dlon,
-                         STARTYEAR=cli_info.startyear, NYEARS=cli_info.nyears, CASENAME="gfdl.synthetic")
+        print("Calling Synthetic Data Generator for GFDL data")
+        synthetic.synthetic_main(input_data, DLAT=cli_info.dlat, DLON=cli_info.dlon,
+                         STARTYEAR=cli_info.startyear, NYEARS=cli_info.nyears,
+                         CASENAME="gfdl.synthetic", TIME_RES="day", DATA_FORMAT="gfdl")
     elif cli_info.convention == 'CESM' or cli_info.convention == 'NCAR':
-        print("importing NCAR variable information")
-        input_data = util.read_yaml.read_yaml("config/gfdl_day.yaml")
+        print("Importing NCAR variable information")
+        time_res = ["mon","day","3hr","1hr"]
+        for t in time_res :
+            input_data = read_yaml("config/gfdl_" + t + ".yml")
 
-        print("Calling NCAR SYNTHETIC")
-        ncar_synthetic.ncar_syn_main(DLAT=cli_info.dlat, DLON=cli_info.dlon,
-                        STARTYEAR=cli_info.startyear, NYEARS=cli_info.nyears, CASENAME="ncar.synthetic")
+            print("Calling Synthetic Data Generator for NCAR data")
+            synthetic.synthetic_main(DLAT=cli_info.dlat, DLON=cli_info.dlon,
+                        STARTYEAR=cli_info.startyear, NYEARS=cli_info.nyears,
+                        CASENAME="ncar.synthetic", TIME_RES=t, DATA_FORMAT="ncar")
 
 if __name__ == '__main__':
     main()
