@@ -2,7 +2,7 @@
 """ mdtf_test_data driver program """
 import argparse
 import util.cli
-from scripts import synthetic
+from synthetic import synthetic_setup
 import sys
 import os
 from envyaml import EnvYAML
@@ -42,17 +42,17 @@ def main():
         input_data = read_yaml("config/gfdl_day.yml")
 
         print("Calling Synthetic Data Generator for GFDL data")
-        synthetic.synthetic_main(input_data, DLAT=cli_info.dlat, DLON=cli_info.dlon,
+        synthetic_setup.synthetic_main(input_data, DLAT=cli_info.dlat, DLON=cli_info.dlon,
                          STARTYEAR=cli_info.startyear, NYEARS=cli_info.nyears,
                          CASENAME="gfdl.synthetic", TIME_RES="day", DATA_FORMAT="gfdl")
     elif cli_info.convention == 'CESM' or cli_info.convention == 'NCAR':
         print("Importing NCAR variable information")
         time_res = ["mon","day","3hr","1hr"]
         for t in time_res :
-            input_data = read_yaml("config/gfdl_" + t + ".yml")
+            input_data = read_yaml("config/ncar_" + t + ".yml")
 
             print("Calling Synthetic Data Generator for NCAR data")
-            synthetic.synthetic_main(DLAT=cli_info.dlat, DLON=cli_info.dlon,
+            synthetic_setup.synthetic_main(input_data, DLAT=cli_info.dlat, DLON=cli_info.dlon,
                         STARTYEAR=cli_info.startyear, NYEARS=cli_info.nyears,
                         CASENAME="ncar.synthetic", TIME_RES=t, DATA_FORMAT="ncar")
 
