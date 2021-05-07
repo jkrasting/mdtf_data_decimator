@@ -12,3 +12,4 @@ from .synthetic import (
     ncar_hybrid_coord,
     write_to_netcdf,
 )
+from .synthetic_setup import synthetic_main
