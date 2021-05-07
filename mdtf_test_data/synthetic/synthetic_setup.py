@@ -27,7 +27,7 @@ def synthetic_main(yaml_dict ={}, DLAT=20.0, DLON=20.0, STARTYEAR=1,NYEARS=10,CA
     # -- Create Data
     print("Generating data with time resolution of ", TIME_RES)
     for v in var_names:
-        vinfo = yaml_dict[v]
+        # vinfo = yaml_dict[v]
         # print(vinfo)
         dset_out = td.synthetic.generate_synthetic_dataset(
             yaml_dict[v + '.stats'],
