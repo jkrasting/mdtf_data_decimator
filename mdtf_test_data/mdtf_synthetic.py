@@ -44,7 +44,7 @@ def main():
         print("Calling Synthetic Data Generator for GFDL data")
         synthetic_setup.synthetic_main(input_data, DLAT=cli_info.dlat, DLON=cli_info.dlon,
                          STARTYEAR=cli_info.startyear, NYEARS=cli_info.nyears,
-                         CASENAME="gfdl.synthetic", TIME_RES="day", DATA_FORMAT="gfdl")
+                         CASENAME="GFDL.Synthetic", TIME_RES="day", DATA_FORMAT="gfdl")
     elif cli_info.convention == 'CESM' or cli_info.convention == 'NCAR':
         print("Importing NCAR variable information")
         time_res = ["mon","day","3hr","1hr"]
@@ -54,7 +54,7 @@ def main():
             print("Calling Synthetic Data Generator for NCAR data")
             synthetic_setup.synthetic_main(input_data, DLAT=cli_info.dlat, DLON=cli_info.dlon,
                         STARTYEAR=cli_info.startyear, NYEARS=cli_info.nyears,
-                        CASENAME="ncar.synthetic", TIME_RES=t, DATA_FORMAT="ncar")
+                        CASENAME="NCAR.Synthetic", TIME_RES=t, DATA_FORMAT="ncar")
 
 if __name__ == '__main__':
     main()
