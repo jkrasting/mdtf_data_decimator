@@ -10,7 +10,7 @@ def create_output_dirs(CASENAME="") :
     print("Creating output data directories")
     if not os.path.exists(f"{CASENAME}/day"):
         os.makedirs(f"{CASENAME}/day")
-    if "ncar" in CASENAME :
+    if "NCAR" in CASENAME :
         if not os.path.exists(f"{CASENAME}/mon"):
             os.makedirs(f"{CASENAME}/mon")
         if not os.path.exists(f"{CASENAME}/3hr"):
@@ -28,7 +28,7 @@ def synthetic_main(yaml_dict ={}, DLAT=20.0, DLON=20.0, STARTYEAR=1,NYEARS=10,CA
     print("Generating data with time resolution of ", TIME_RES)
     for v in var_names:
         vinfo = yaml_dict[v]
-        print(vinfo)
+        # print(vinfo)
         dset_out = td.synthetic.generate_synthetic_dataset(
             yaml_dict[v + '.stats'],
             DLON,
