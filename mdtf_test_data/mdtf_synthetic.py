@@ -1,8 +1,8 @@
 #!/usr/bin/python
 """ mdtf_test_data driver program """
 import argparse
-from util import cli
-from synthetic import synthetic_setup
+from util.cli import cli_holder
+from synthetic.synthetic_setup import synthetic_main
 import sys
 import os
 from envyaml import EnvYAML
@@ -32,7 +32,7 @@ def main():
     parser.add_argument("--dlon", type=float, help="Longitude resolution in degrees",
                     required=False, default=20.0)
     args = parser.parse_args()
-    cli_info = cli.cli_holder(args.convention, args.startyear,
+    cli_info = cli_holder(args.convention, args.startyear,
                           args.nyears, args.dlat, args.dlon)
 
     assert cli_info.dlat <= 30.0 and cli_info.dlat >= 0.5, "Error: dlat value is invalid; valid range is [0.5 30.0]"
@@ -42,7 +42,7 @@ def main():
         input_data = read_yaml("config/gfdl_day.yml")
 
         print("Calling Synthetic Data Generator for GFDL data")
-        synthetic_setup.synthetic_main(input_data, DLAT=cli_info.dlat, DLON=cli_info.dlon,
+        synthetic_main(input_data, DLAT=cli_info.dlat, DLON=cli_info.dlon,
                          STARTYEAR=cli_info.startyear, NYEARS=cli_info.nyears,
                          CASENAME="GFDL.Synthetic", TIME_RES="day", DATA_FORMAT="gfdl")
     elif cli_info.convention == 'CESM' or cli_info.convention == 'NCAR':
@@ -52,7 +52,7 @@ def main():
             input_data = read_yaml("config/ncar_" + t + ".yml")
 
             print("Calling Synthetic Data Generator for NCAR data")
-            synthetic_setup.synthetic_main(input_data, DLAT=cli_info.dlat, DLON=cli_info.dlon,
+            synthetic_main(input_data, DLAT=cli_info.dlat, DLON=cli_info.dlon,
                         STARTYEAR=cli_info.startyear, NYEARS=cli_info.nyears,
                         CASENAME="NCAR.Synthetic", TIME_RES=t, DATA_FORMAT="ncar")
 
