@@ -1,7 +1,7 @@
 #!/usr/bin/python
 """ mdtf_test_data driver program """
 import argparse
-import util.cli
+from util import cli
 from synthetic import synthetic_setup
 import sys
 import os
@@ -32,7 +32,7 @@ def main():
     parser.add_argument("--dlon", type=float, help="Longitude resolution in degrees",
                     required=False, default=20.0)
     args = parser.parse_args()
-    cli_info = util.cli.cli_holder(args.convention, args.startyear,
+    cli_info = cli.cli_holder(args.convention, args.startyear,
                           args.nyears, args.dlat, args.dlon)
 
     assert cli_info.dlat <= 30.0 and cli_info.dlat >= 0.5, "Error: dlat value is invalid; valid range is [0.5 30.0]"
