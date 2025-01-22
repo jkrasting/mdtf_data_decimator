@@ -150,7 +150,7 @@ def main():
             continue 
    
         # call generator
-        print(f"Calling Snthetic Data Generator for {input_file}") 
+        print(f"Calling Synthetic Data Generator for {input_file}") 
         synthetic_main(
             input_data,
             DLAT=dlat,
