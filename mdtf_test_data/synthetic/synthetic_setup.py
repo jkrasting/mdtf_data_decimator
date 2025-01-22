@@ -40,16 +40,8 @@ def create_output_dirs(CASENAME="", STARTYEAR=1, NYEARS=10, TIME_RES="day"):
 
     print("Creating output data directories")
 
-    if not os.path.exists(f"{out_dir_root}/day"):
-        os.makedirs(f"{out_dir_root}/day")
-    if not os.path.exists(f"{out_dir_root}/mon"):
-        os.makedirs(f"{out_dir_root}/mon")
-    if "ncar" in str.lower(out_dir_root):
-        if not os.path.exists(f"{out_dir_root}/3hr"):
-            os.makedirs(f"{out_dir_root}/3hr")
-        if not os.path.exists(f"{out_dir_root}/1hr"):
-            os.makedirs(f"{out_dir_root}/1hr")
-
+    if not os.path.exists(f"{out_dir_root}/{TIME_RES}"):
+        os.makedirs(f"{out_dir_root}/{TIME_RES}")
 
 def synthetic_main(
     yaml_dict={},
@@ -62,7 +54,7 @@ def synthetic_main(
     DATA_FORMAT="",
 ):
     """Main script to generate synthetic data using GFDL naming conventions"""
-    create_output_dirs(CASENAME, STARTYEAR=STARTYEAR, NYEARS=NYEARS)
+    create_output_dirs(CASENAME, STARTYEAR=STARTYEAR, NYEARS=NYEARS, TIME_RES=TIME_RES)
     # parse the yaml dictionary
     var_names = yaml_dict["variables.name"]
     # -- Create Data
@@ -149,13 +141,18 @@ def synthetic_main(
 
         if DATA_FORMAT == "cmip":
             # formulate the date string in the file name
-            date_string = generate_date_string(
+            dir_date_string = generate_date_string(
                 STARTYEAR=STARTYEAR, NYEARS=NYEARS, TIME_RES="day"
             )
+            file_date_string = dir_date_string
+            if TIME_RES == "mon":
+                file_date_string = generate_date_string(
+                    STARTYEAR=STARTYEAR, NYEARS=NYEARS, TIME_RES="mon"
+                )
 
-            outname = f"{CASENAME.replace('.','_')}_r1i1p1f1_gr1_{date_string}.{v}.{TIME_RES}.nc"
+            outname = f"{CASENAME.replace('.','_')}_r1i1p1f1_gr1_{file_date_string}.{v}.{TIME_RES}.nc"
             # output root directory and file name base must match
-            out_dir_root = f"{CASENAME.replace('.','_')}_r1i1p1f1_gr1_{date_string}"
+            out_dir_root = f"{CASENAME.replace('.','_')}_r1i1p1f1_gr1_{dir_date_string}"
         else:
             outname = f"{CASENAME}.{v}.{TIME_RES}.nc"
             out_dir_root = CASENAME
