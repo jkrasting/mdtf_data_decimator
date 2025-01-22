@@ -141,18 +141,13 @@ def synthetic_main(
 
         if DATA_FORMAT == "cmip":
             # formulate the date string in the file name
-            dir_date_string = generate_date_string(
+            date_string = generate_date_string(
                 STARTYEAR=STARTYEAR, NYEARS=NYEARS, TIME_RES="day"
             )
-            file_date_string = dir_date_string
-            if TIME_RES == "mon":
-                file_date_string = generate_date_string(
-                    STARTYEAR=STARTYEAR, NYEARS=NYEARS, TIME_RES="mon"
-                )
 
-            outname = f"{CASENAME.replace('.','_')}_r1i1p1f1_gr1_{file_date_string}.{v}.{TIME_RES}.nc"
+            outname = f"{CASENAME.replace('.','_')}_r1i1p1f1_gr1_{date_string}.{v}.{TIME_RES}.nc"
             # output root directory and file name base must match
-            out_dir_root = f"{CASENAME.replace('.','_')}_r1i1p1f1_gr1_{dir_date_string}"
+            out_dir_root = f"{CASENAME.replace('.','_')}_r1i1p1f1_gr1_{date_string}"
         else:
             outname = f"{CASENAME}.{v}.{TIME_RES}.nc"
             out_dir_root = CASENAME
