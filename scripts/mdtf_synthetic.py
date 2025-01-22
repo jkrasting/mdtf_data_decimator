@@ -53,7 +53,7 @@ def main():
         help="Frequency of data",
         choices=["1hr", "3hr", "day", "mon"],
         required=False,
-        default='day',
+        default=["1hr", "3hr", "day", "mon"],
     )
     parser.add_argument(
         "--dlat",
