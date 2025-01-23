@@ -48,6 +48,14 @@ def main():
         default=10,
     )
     parser.add_argument(
+        "--freq",
+        nargs='+',
+        help="Frequency of data",
+        choices=["1hr", "3hr", "day", "mon"],
+        required=False,
+        default=["1hr", "3hr", "day", "mon"],
+    )
+    parser.add_argument(
         "--dlat",
         type=float,
         help="Latitude resolution in degrees (will not change default value for NCAR daily data)",
@@ -69,6 +77,7 @@ def main():
         args.convention,
         args.startyear,
         args.nyears,
+        args.freq,
         args.dlat,
         args.dlon,
         args.unittest,
@@ -117,67 +126,47 @@ def main():
             )
             sys.exit(retcode_4)
 
-    if cli_info.convention == "GFDL":
-        print("Importing GFDL variable information")
-        input_data = pkgr.resource_filename("mdtf_test_data", "config/gfdl_day.yml")
-        input_data = read_yaml(input_data)
-
-        print("Calling Synthetic Data Generator for GFDL data")
-        synthetic_main(
-            input_data,
-            DLAT=cli_info.dlat,
-            DLON=cli_info.dlon,
-            STARTYEAR=cli_info.startyear,
-            NYEARS=cli_info.nyears,
-            CASENAME="GFDL.Synthetic",
-            TIME_RES="day",
-            DATA_FORMAT="gfdl",
-        )
-    elif cli_info.convention == "CESM" or cli_info.convention == "NCAR":
-        print("Importing NCAR variable information")
-        time_res = ["mon", "day", "3hr", "1hr"]
-        for t in time_res:
-            input_data = pkgr.resource_filename(
-                "mdtf_test_data", f"config/ncar_{t}.yml"
-            )
-            input_data = read_yaml(input_data)
-            dlat = cli_info.dlat
-            dlon = cli_info.dlon
-            if t == "day":
+    # output for multiple frequencies if requested by user 
+    for freq in cli_info.freq:    
+        
+        # handle requirements for NCAR and CESM
+        conv = cli_info.convention
+        dlat = cli_info.dlat
+        dlon = cli_info.dlon
+        if cli_info.convention == "CESM" or cli_info.convention == "NCAR":
+            conv = "NCAR"
+            if freq == 'day':
                 dlat = 5.0
                 dlon = 5.0
-            print("Calling Synthetic Data Generator for NCAR data")
-            synthetic_main(
-                input_data,
-                DLAT=dlat,
-                DLON=dlon,
-                STARTYEAR=cli_info.startyear,
-                NYEARS=cli_info.nyears,
-                CASENAME="NCAR.Synthetic",
-                TIME_RES=t,
-                DATA_FORMAT="ncar",
-            )
-    if cli_info.convention == "CMIP":
-        print("Importing CMIP variable information")
-        time_res = ["mon", "day"]
-        for t in time_res:
-            input_data = pkgr.resource_filename(
-                "mdtf_test_data", f"config/cmip_{t}.yml"
-            )
+
+        # import variable information
+        print(f"Importing {cli_info.convention} variable for information for {freq} frequency")
+        input_file = f"{conv.lower()}_{freq}.yml"
+        input_data = pkgr.resource_filename("mdtf_test_data", "config/"+input_file)
+        try:
             input_data = read_yaml(input_data)
-
-            print("Calling Synthetic Data Generator for CMIP data")
-            synthetic_main(
-                input_data,
-                DLAT=cli_info.dlat,
-                DLON=cli_info.dlon,
-                STARTYEAR=cli_info.startyear,
-                NYEARS=cli_info.nyears,
-                CASENAME="CMIP.Synthetic",
-                TIME_RES=t,
-                DATA_FORMAT="cmip",
-            )
-
+        except FileNotFoundError:
+            print(f"ERROR: Could not find {input_file} in config dir! Skipping this request.")
+            continue 
+   
+        # call generator
+        print(f"Calling Synthetic Data Generator for {input_file}") 
+        synthetic_main(
+            input_data,
+            DLAT=dlat,
+            DLON=dlon,
+            STARTYEAR=cli_info.startyear,
+            NYEARS=cli_info.nyears,
+            CASENAME=f"{cli_info.convention}.Synthetic",
+            TIME_RES=freq,
+            DATA_FORMAT=conv.lower(),
+        )
+        
+        print(f"Generated data from {input_file}!")
+   
+    # all done! 
+    print(f"Done generating {cli_info.convention} data!")
+    sys.exit(0)    
 
 if __name__ == "__main__":
     main()

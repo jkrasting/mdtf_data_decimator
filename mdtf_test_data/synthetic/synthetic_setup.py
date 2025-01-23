@@ -40,16 +40,8 @@ def create_output_dirs(CASENAME="", STARTYEAR=1, NYEARS=10, TIME_RES="day"):
 
     print("Creating output data directories")
 
-    if not os.path.exists(f"{out_dir_root}/day"):
-        os.makedirs(f"{out_dir_root}/day")
-    if not os.path.exists(f"{out_dir_root}/mon"):
-        os.makedirs(f"{out_dir_root}/mon")
-    if "ncar" in str.lower(out_dir_root):
-        if not os.path.exists(f"{out_dir_root}/3hr"):
-            os.makedirs(f"{out_dir_root}/3hr")
-        if not os.path.exists(f"{out_dir_root}/1hr"):
-            os.makedirs(f"{out_dir_root}/1hr")
-
+    if not os.path.exists(f"{out_dir_root}/{TIME_RES}"):
+        os.makedirs(f"{out_dir_root}/{TIME_RES}")
 
 def synthetic_main(
     yaml_dict={},
@@ -62,7 +54,7 @@ def synthetic_main(
     DATA_FORMAT="",
 ):
     """Main script to generate synthetic data using GFDL naming conventions"""
-    create_output_dirs(CASENAME, STARTYEAR=STARTYEAR, NYEARS=NYEARS)
+    create_output_dirs(CASENAME, STARTYEAR=STARTYEAR, NYEARS=NYEARS, TIME_RES=TIME_RES)
     # parse the yaml dictionary
     var_names = yaml_dict["variables.name"]
     # -- Create Data
